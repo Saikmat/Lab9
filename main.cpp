@@ -1,5 +1,9 @@
 /*
- * Copyright ©2022 – Howard Community College All rights reserved; Unauthorized duplication prohibited.
+ * Copyright ©2023 – Howard Community College All rights reserved; Unauthorized duplication prohibited.
+ * Name: Sai Matukumalli
+ * Date: 11-16-2023
+ * Program Name: Cellphone checkout software
+ * Program Description: This program
  */
 
 
@@ -24,6 +28,9 @@ void printCopyright();
 int validateInput(const int BUY_PHONE, const int CUSTOMER_CHECKOUT, const int QUIT, const string &menu,
                   const stack<Cellphone *, vector<Cellphone *>> &cellphones, int input);
 
+/*
+ * Runs the program
+ */
 int main() {
     printCopyright();
     const int DEFAULT = 0;
@@ -38,7 +45,7 @@ int main() {
     deque<Customer*> customers;
     createStack(cellphones);
     
-    int input;
+    int input = DEFAULT;
 
     while (input != QUIT){
         cout << menu;
@@ -70,6 +77,10 @@ int main() {
     return 0;
 }
 
+/*
+ * Checks if the menu input is valid and makes sure that the user enters a value that is actually contained in the inputs
+ * Also prevents the user from entering the buy menu when the stack is empty
+ */
 int validateInput(const int BUY_PHONE, const int CUSTOMER_CHECKOUT, const int QUIT, const string &menu,
                   const stack<Cellphone *, vector<Cellphone *>> &cellphones, int input) {
     while (input < BUY_PHONE || input > QUIT) {
@@ -86,6 +97,10 @@ int validateInput(const int BUY_PHONE, const int CUSTOMER_CHECKOUT, const int QU
     return input;
 }
 
+/*
+ * Prints the receipt of the customer at the front of the parameter deque
+ * No return since the print is done in the menu
+ */
 void checkout(deque<Customer*>& customers) {
     if(customers.empty()){
         cout << "Error, there are no customers in the queue";
@@ -94,8 +109,15 @@ void checkout(deque<Customer*>& customers) {
     Customer* c = customers.front();
     customers.pop_front();
     cout << c;
+    delete c;
 }
 
+/*
+ * Allows the customer to buy a phone
+ * Takes in a stack of cellphones that are available and the customer deque to push customers onto
+ * Pops a user entered number phones off the stack and into the customer's "shopping cart" so they can check out
+ * No return, all data is modified in the method itself
+ */
 void buyPhone(stack<Cellphone*, vector<Cellphone*>>& cellphones, deque<Customer*>& customers){
     string customerName;
     int numberOfPhonesPurchased = 0;
@@ -117,6 +139,10 @@ void buyPhone(stack<Cellphone*, vector<Cellphone*>>& cellphones, deque<Customer*
     customers.push_back(new Customer(customerName, numberOfPhonesPurchased, phonesPurchased));
 }
 
+/*
+ * Reads the text file of all the cellphones and creates a stack of cellphone objects given the ID and phone number
+ * No return, the stack is modified in place
+ */
 void createStack(stack <Cellphone*, vector<Cellphone*>>& cellphones){
     ifstream* ifstream1 = new ifstream(R"(C:\Users\SaiKM\CLionProjects\Lab9\Cellphone.txt)", ios::in);
     while(!ifstream1->eof()){
@@ -126,8 +152,12 @@ void createStack(stack <Cellphone*, vector<Cellphone*>>& cellphones){
         cellphones.push(new Cellphone(phoneID, phoneNumber));
     }
     ifstream1->close();
+    delete ifstream1;
 }
 
+/*
+ * Prints the HCC copyright
+ */
 void printCopyright(){
-    cout << "\n\nCopyright ©2022 – Howard Community College All rights reserved; Unauthorized duplication prohibited.\n\n\n\n";
+    cout << "\n\nCopyright ©2023 – Howard Community College All rights reserved; Unauthorized duplication prohibited.\n\n\n\n";
 }
