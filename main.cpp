@@ -1,3 +1,8 @@
+/*
+ * Copyright ©2022 – Howard Community College All rights reserved; Unauthorized duplication prohibited.
+ */
+
+
 #include <iostream>
 #include <vector>
 #include <stack>
@@ -14,39 +19,32 @@ void buyPhone(stack<Cellphone*, vector<Cellphone*>>& cellphones, deque<Customer*
 
 void checkout(deque<Customer*> &customers);
 
+void printCopyright();
+
+int validateInput(const int BUY_PHONE, const int CUSTOMER_CHECKOUT, const int QUIT, const string &menu,
+                  const stack<Cellphone *, vector<Cellphone *>> &cellphones, int input);
+
 int main() {
+    printCopyright();
+    const int DEFAULT = 0;
     const int BUY_PHONE = 1;
     const int CUSTOMER_CHECKOUT = 2;
     const int QUIT = 3;
-    const string menu = "1. Buy Phone\n"
+    const string menu = "\n1. Buy Phone\n"
                         "2. Check out\n"
-                        "3. Quit";
+                        "3. Quit\n";
     
     stack<Cellphone*, vector<Cellphone*>> cellphones;
     deque<Customer*> customers;
     createStack(cellphones);
     
     int input;
-    cout << menu;
-    cout << "Enter a menu choice";
-    cin >> input;
-    while (input < BUY_PHONE || input > QUIT) {
-        cout << "Invalid choice! Enter a number between " << BUY_PHONE << " and " << QUIT;
-        cin >> input;
-    }
+
     while (input != QUIT){
         cout << menu;
         cout << "Enter a menu choice";
         cin >> input;
-        while (input < BUY_PHONE || input > QUIT) {
-            if (cellphones.empty()) { //prevents case 1 if stack is empty
-                cout << "Invalid Choice! Enter a number between " << CUSTOMER_CHECKOUT << " and " << QUIT;
-                cin >> input;
-            } else {
-                cout << "Invalid choice! Enter a number between " << BUY_PHONE << " and " << QUIT;
-                cin >> input;
-            }
-        }
+        input = validateInput(BUY_PHONE, CUSTOMER_CHECKOUT, QUIT, menu, cellphones, input);
         switch (input) {
             case BUY_PHONE: {
                 buyPhone(cellphones, customers);
@@ -59,7 +57,8 @@ int main() {
             default:
             case QUIT: {
                 if(!customers.empty()){
-                    cout << "There are still customers in the queue";
+                    cout << "There are still " << customers.size() << " customers in the queue" << endl;
+                    input = DEFAULT;
                     break;
                 }
                 cout << "Thank you for using the phone purchase software";
@@ -71,28 +70,46 @@ int main() {
     return 0;
 }
 
+int validateInput(const int BUY_PHONE, const int CUSTOMER_CHECKOUT, const int QUIT, const string &menu,
+                  const stack<Cellphone *, vector<Cellphone *>> &cellphones, int input) {
+    while (input < BUY_PHONE || input > QUIT) {
+        cout << "Invalid choice! Enter a number between " << BUY_PHONE << " and " << QUIT;
+        cout << menu;
+        cin >> input;
+    }
+    while(input == BUY_PHONE && cellphones.empty()){
+        cout << "There are no more phones for purchase! Enter a number between " << CUSTOMER_CHECKOUT << " and " << QUIT;
+        cout << menu;
+        cin >> input;
+    }
+
+    return input;
+}
+
 void checkout(deque<Customer*>& customers) {
     if(customers.empty()){
         cout << "Error, there are no customers in the queue";
         return;
     }
-    Customer* c = customers.back();
-    customers.pop_back();
+    Customer* c = customers.front();
+    customers.pop_front();
     cout << c;
 }
 
 void buyPhone(stack<Cellphone*, vector<Cellphone*>>& cellphones, deque<Customer*>& customers){
     string customerName;
-    int numberOfPhonesPurchased;
-    cout << "Enter tha name of the customer: ";
-    cin >> customerName;
-    cout << "Enter the number of phones";
+    int numberOfPhonesPurchased = 0;
+    cout << "Enter the name of the customer: ";
+    cin.ignore();
+    getline(cin, customerName);
+    cout << "Enter the number of phones: ";
     cin >> numberOfPhonesPurchased;
     while(numberOfPhonesPurchased < 1 || numberOfPhonesPurchased > 6 || numberOfPhonesPurchased > cellphones.size()){
-        cout << "Invalid input! Enter a number between 1 and " << min((unsigned long long) 6, cellphones.size());
+        cout << "Not Enough Phones! Enter a number between 1 and " << min((unsigned long long) 6, cellphones.size());
         cin >> numberOfPhonesPurchased;
     }
-    Cellphone** phonesPurchased = new Cellphone*[numberOfPhonesPurchased];
+    Cellphone* phonesPurchased[numberOfPhonesPurchased];
+
     for (int i = 0; i < numberOfPhonesPurchased; ++i) {
         phonesPurchased[i] = cellphones.top();
         cellphones.pop();
@@ -101,9 +118,16 @@ void buyPhone(stack<Cellphone*, vector<Cellphone*>>& cellphones, deque<Customer*
 }
 
 void createStack(stack <Cellphone*, vector<Cellphone*>>& cellphones){
-    fstream* fstream1 = new fstream(R"(C:\Users\SaiKM\CLionProjects\Lab9\Cellphone.cpp)", ios::in);
-    while(!fstream1->eof()){
-        cellphones.push(reinterpret_cast<Cellphone*>(fstream1->get()));
+    ifstream* ifstream1 = new ifstream(R"(C:\Users\SaiKM\CLionProjects\Lab9\Cellphone.txt)", ios::in);
+    while(!ifstream1->eof()){
+        string phoneID, phoneNumber;
+        getline(*ifstream1, phoneID);
+        getline(*ifstream1, phoneNumber);
+        cellphones.push(new Cellphone(phoneID, phoneNumber));
     }
-    fstream1->close();
+    ifstream1->close();
+}
+
+void printCopyright(){
+    cout << "\n\nCopyright ©2022 – Howard Community College All rights reserved; Unauthorized duplication prohibited.\n\n\n\n";
 }

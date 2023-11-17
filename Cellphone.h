@@ -10,14 +10,9 @@ private:
     std::string cellphoneNumber;
     
 public:
-    Cellphone(){
-        cellphoneIDNumber = "none";
-        cellphoneNumber = "none";
-    }
-    Cellphone(std::string cellPhoneIDNumber, std::string cellphoneNumber){
-        this->cellphoneIDNumber = cellPhoneIDNumber;
-        this->cellphoneNumber = cellphoneNumber;
-    }
+    Cellphone();
+
+    Cellphone(std::string cellPhoneIDNumber, std::string cellphoneNumber);
     
     const std::string &getCellphoneIdNumber() const;
     

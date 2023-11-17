@@ -1,6 +1,4 @@
-//
-// Created by SaiKM on 11/14/2023.
-//
+//Copyright ©2022 – Howard Community College All rights reserved; Unauthorized duplication prohibited.
 
 #ifndef LAB9_CUSTOMER_H
 #define LAB9_CUSTOMER_H
@@ -15,10 +13,9 @@ private:
     const double SALES_TAX = 1.06;
     int numberOfPhonesPurchased;
     double costOfPurchase; // 199.99 a piece, 6% tax, hold total
-    Cellphone* cellPhones[6];
-
-protected:
+    Cellphone* cellPhones;
     std::string customerName;
+
 public:
     Customer(const std::string &customerName, int numberOfPhonesPurchased, Cellphone** cellPhones);
     Customer();
