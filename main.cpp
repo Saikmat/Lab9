@@ -1,9 +1,8 @@
 /*
- * Copyright ©2023 – Howard Community College All rights reserved; Unauthorized duplication prohibited.
+ * Copyright ©2024 – Howard Community College All rights reserved; Unauthorized duplication prohibited.
  * Name: Sai Matukumalli
- * Date: 11-16-2023
  * Program Name: Cellphone checkout software
- * Program Description: This program
+ * Program Description: This program maintains a checkout system for cellphones, tracking how many people have a phone, how many people are customers, and who has what phones
  */
 
 
@@ -25,18 +24,18 @@ void checkout(deque<Customer*> &customers);
 
 void printCopyright();
 
-int validateInput(const int BUY_PHONE, const int CUSTOMER_CHECKOUT, const int QUIT, const string &menu,
-                  const stack<Cellphone *, vector<Cellphone *>> &cellphones, int input);
+int validateInput(const string &menu, const stack<Cellphone *, vector<Cellphone *>> &cellphones, int input);
+const int DEFAULT = 0;
+const int BUY_PHONE = 1;
+const int CUSTOMER_CHECKOUT = 2;
+const int QUIT = 3;
 
 /*
  * Runs the program
  */
 int main() {
     printCopyright();
-    const int DEFAULT = 0;
-    const int BUY_PHONE = 1;
-    const int CUSTOMER_CHECKOUT = 2;
-    const int QUIT = 3;
+
     const string menu = "\n1. Buy Phone\n"
                         "2. Check out\n"
                         "3. Quit\n";
@@ -51,8 +50,8 @@ int main() {
         cout << menu;
         cout << "Enter a menu choice";
         cin >> input;
-        input = validateInput(BUY_PHONE, CUSTOMER_CHECKOUT, QUIT, menu, cellphones, input);
-        switch (input) {
+        input = validateInput(menu, cellphones, input);
+        switch (input) { // NOLINT(*-multiway-paths-covered)
             case BUY_PHONE: {
                 buyPhone(cellphones, customers);
                 break;
@@ -61,7 +60,6 @@ int main() {
                 checkout(customers);
                 break;
             }
-            default:
             case QUIT: {
                 if(!customers.empty()){
                     cout << "There are still " << customers.size() << " customers in the queue" << endl;
@@ -81,8 +79,7 @@ int main() {
  * Checks if the menu input is valid and makes sure that the user enters a value that is actually contained in the inputs
  * Also prevents the user from entering the buy menu when the stack is empty
  */
-int validateInput(const int BUY_PHONE, const int CUSTOMER_CHECKOUT, const int QUIT, const string &menu,
-                  const stack<Cellphone *, vector<Cellphone *>> &cellphones, int input) {
+int validateInput(const string &menu, const stack<Cellphone *, vector<Cellphone *>> &cellphones, int input) {
     while (input < BUY_PHONE || input > QUIT) {
         cout << "Invalid choice! Enter a number between " << BUY_PHONE << " and " << QUIT;
         cout << menu;
