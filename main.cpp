@@ -16,15 +16,15 @@
 
 using namespace std;
 
-void createStack(stack<Cellphone*, vector<Cellphone*>>&);
+void createStack(stack<Cellphone, vector<Cellphone>>&);
 
-void buyPhone(stack<Cellphone*, vector<Cellphone*>>& cellphones, deque<Customer*>&);
+void buyPhone(stack<Cellphone, vector<Cellphone>>& cellphones, deque<Customer*>&);
 
 void checkout(deque<Customer*> &customers);
 
 void printCopyright();
 
-int validateInput(const string &menu, const stack<Cellphone *, vector<Cellphone *>> &cellphones, int input);
+int validateInput(const string &menu, const stack<Cellphone, vector<Cellphone>> &cellphones, int input);
 const int DEFAULT = 0;
 const int BUY_PHONE = 1;
 const int CUSTOMER_CHECKOUT = 2;
@@ -40,7 +40,7 @@ int main() {
                         "2. Check out\n"
                         "3. Quit\n";
     
-    stack<Cellphone*, vector<Cellphone*>> cellphones;
+    stack<Cellphone, vector<Cellphone>> cellphones;
     deque<Customer*> customers;
     createStack(cellphones);
     
@@ -79,7 +79,7 @@ int main() {
  * Checks if the menu input is valid and makes sure that the user enters a value that is actually contained in the inputs
  * Also prevents the user from entering the buy menu when the stack is empty
  */
-int validateInput(const string &menu, const stack<Cellphone *, vector<Cellphone *>> &cellphones, int input) {
+int validateInput(const string &menu, const stack<Cellphone, vector<Cellphone>> &cellphones, int input) {
     while (input < BUY_PHONE || input > QUIT) {
         cout << "Invalid choice! Enter a number between " << BUY_PHONE << " and " << QUIT;
         cout << menu;
@@ -115,7 +115,7 @@ void checkout(deque<Customer*>& customers) {
  * Pops a user entered number phones off the stack and into the customer's "shopping cart" so they can check out
  * No return, all data is modified in the method itself
  */
-void buyPhone(stack<Cellphone*, vector<Cellphone*>>& cellphones, deque<Customer*>& customers){
+void buyPhone(stack<Cellphone, vector<Cellphone>>& cellphones, deque<Customer*>& customers){
     string customerName;
     int numberOfPhonesPurchased = 0;
     cout << "Enter the name of the customer: ";
@@ -130,7 +130,7 @@ void buyPhone(stack<Cellphone*, vector<Cellphone*>>& cellphones, deque<Customer*
     Cellphone* phonesPurchased[numberOfPhonesPurchased];
 
     for (int i = 0; i < numberOfPhonesPurchased; ++i) {
-        phonesPurchased[i] = cellphones.top();
+        phonesPurchased[i] = &cellphones.top();
         cellphones.pop();
     }
     customers.push_back(new Customer(customerName, numberOfPhonesPurchased, phonesPurchased));
@@ -140,13 +140,13 @@ void buyPhone(stack<Cellphone*, vector<Cellphone*>>& cellphones, deque<Customer*
  * Reads the text file of all the cellphones and creates a stack of cellphone objects given the ID and phone number
  * No return, the stack is modified in place
  */
-void createStack(stack <Cellphone*, vector<Cellphone*>>& cellphones){
+void createStack(stack <Cellphone, vector<Cellphone>>& cellphones){
     ifstream* ifstream1 = new ifstream(R"(C:\Users\SaiKM\CLionProjects\Lab9\Cellphone.txt)", ios::in);
     while(!ifstream1->eof()){
         string phoneID, phoneNumber;
         getline(*ifstream1, phoneID);
         getline(*ifstream1, phoneNumber);
-        cellphones.push(new Cellphone(phoneID, phoneNumber));
+        cellphones.emplace(phoneID, phoneNumber);
     }
     ifstream1->close();
     delete ifstream1;
@@ -156,5 +156,5 @@ void createStack(stack <Cellphone*, vector<Cellphone*>>& cellphones){
  * Prints the HCC copyright
  */
 void printCopyright(){
-    cout << "\n\nCopyright ©2023 – Howard Community College All rights reserved; Unauthorized duplication prohibited.\n\n\n\n";
+    cout << "\n\nCopyright ©2024 – Howard Community College All rights reserved; Unauthorized duplication prohibited.\n\n\n\n";
 }
